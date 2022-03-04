@@ -50,15 +50,14 @@ app.get("/", function (req, res) {
 });
 
 app.post("/", function (req, res) {
-  const item = req.body.newItem;
-
-  if (req.body.list === "Work") {
-    workItems.push(item);
-    res.redirect("/work");
-  } else {
-    items.push(item);
-    res.redirect("/");
-  }
+  const itemTitle = req.body.newItem;
+  //new item document
+  const item = new Item({
+    title: itemTitle,
+  });
+  //we can simply use .save() to save a new document to a collection
+  item.save();
+  res.redirect("/");
 });
 
 app.get("/work", function (req, res) {
