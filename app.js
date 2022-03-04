@@ -59,7 +59,17 @@ app.post("/", function (req, res) {
   item.save();
   res.redirect("/");
 });
-
+app.post("/delete", function (req, res) {
+  const checkItemId = req.body.value;
+  Item.findOneAndRemove(checkItemId, function (err) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("successfully deleted");
+    }
+  });
+  res.redirect("/");
+});
 app.get("/work", function (req, res) {
   res.render("list", { listTitle: "Work List", newListItems: workItems });
 });
