@@ -13,6 +13,26 @@ const itemsSchema = {
 //create model based on schema
 const Item = mongoose.model("Item", itemsSchema);
 
+const item1 = new Item({
+  title: "Connect todolist to mongoose",
+});
+const item2 = new Item({
+  title: "50 push ups",
+});
+const item3 = new Item({
+  title: "Joj 200miles in 5 seconds",
+});
+
+const defaultItems = [item1, item2, item3];
+
+Item.insertMany(defaultItems, function (err) {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log("Successfully added");
+  }
+});
+
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
