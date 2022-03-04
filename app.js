@@ -23,6 +23,13 @@ const item3 = new Item({
   title: "Joj 200miles in 5 seconds",
 });
 
+const ListSchema = {
+  title: String,
+  items: [itemsSchema],
+};
+
+const List = mongoose.model("List", ListSchema);
+
 const defaultItems = [item1, item2, item3];
 
 app.set("view engine", "ejs");
@@ -70,8 +77,25 @@ app.post("/delete", function (req, res) {
   });
   res.redirect("/");
 });
-app.get("/work", function (req, res) {
-  res.render("list", { listTitle: "Work List", newListItems: workItems });
+
+app.get("/:customListname", function (req, res) {
+  const customListname = req.params.customListname;
+
+  List.findOne({ title: customListname }, function (err, foundList) {
+    if (!foundList) {
+      const list = new List({
+        title: customListname,
+        items: defaultItems,
+      });
+      list.save();
+      res.redirect("/" + customListname);
+    } else {
+      res.render("list", {
+        listTitle: foundList.title,
+        newListItems: foundList.items,
+      });
+    }
+  });
 });
 
 app.get("/about", function (req, res) {
