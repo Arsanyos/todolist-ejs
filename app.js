@@ -3,6 +3,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const _ = require("lodash");
 
 const app = express();
 
@@ -58,28 +59,53 @@ app.get("/", function (req, res) {
 
 app.post("/", function (req, res) {
   const itemTitle = req.body.newItem;
+  const listName = req.body.list;
   //new item document
   const item = new Item({
     title: itemTitle,
   });
-  //we can simply use .save() to save a new document to a collection
-  item.save();
-  res.redirect("/");
+  if (listName === "Today") {
+    item.save();
+    res.redirect("/");
+  } else {
+    List.findOne({ title: itemTitle }, function (err, foundList) {
+      if (!err) {
+        foundList.items.push(item);
+        foundList.save();
+        res.redirect("/" + listName);
+      }
+    });
+  }
 });
 app.post("/delete", function (req, res) {
-  const checkItemId = req.body.value;
-  Item.findOneAndRemove(checkItemId, function (err) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("successfully deleted");
-    }
-  });
-  res.redirect("/");
+  const checkItemId = req.body.checkbox;
+  const listName = req.body.listName;
+  if (listName === "Today") {
+    Item.findOneAndRemove(checkItemId, function (err) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("successfully deleted");
+      }
+    });
+    res.redirect("/");
+  } else {
+    List.findOneAndUpdate(
+      { title: listName },
+      { $pull: { _id: checkItemId } },
+      function (err) {
+        if (err) {
+          console.log(err);
+        } else {
+          res.redirect("/" + listName);
+        }
+      }
+    );
+  }
 });
 
 app.get("/:customListname", function (req, res) {
-  const customListname = req.params.customListname;
+  const customListname = _.capitalize(req.params.customListname);
 
   List.findOne({ title: customListname }, function (err, foundList) {
     if (!foundList) {
