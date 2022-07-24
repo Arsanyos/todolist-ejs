@@ -31,7 +31,7 @@ const ListSchema = {
   items: [itemsSchema],
 };
 
-const List = mongoose.model("List", ListSchema);
+const List = mongoose.model("items", ListSchema);
 
 const defaultItems = [item1, item2, item3];
 
@@ -130,11 +130,11 @@ app.get("/about", function (req, res) {
   res.render("about");
 });
 let port = process.env.PORT;
-// if (port == null || port == "") {
-//   port = 27017;
-// }
+if (port == null || port == "") {
+  port = 27017;
+}
 app.listen(port);
 app.listen(port, function () {
   console.log("Server started successfully");
-  console.log(port);
+
 });
