@@ -1,14 +1,14 @@
 //jshint esversion:6
-
 const express = require("express");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
+// import mongoose from "mongoose";
+// const mongoose = require("mongoose");
 const _ = require("lodash");
 
 const app = express();
 
 mongoose.connect(
-  "mongodb+srv://madnman_lacy:Gashew.24@cluster0.dkyqo.mongodb.net/todolistDB?retryWrites=true&w=majority"
+  "mongodb+srv://madnman_lacy:Gashew.24@blogpost.dkyqo.mongodb.net/todolistDB?retryWrites=true&w=majority"
 );
 const itemsSchema = {
   title: String,
@@ -130,10 +130,11 @@ app.get("/about", function (req, res) {
   res.render("about");
 });
 let port = process.env.PORT;
-if (port == null || port == "") {
-  port = 3000;
-}
+// if (port == null || port == "") {
+//   port = 27017;
+// }
 app.listen(port);
 app.listen(port, function () {
   console.log("Server started successfully");
+  console.log(port);
 });
